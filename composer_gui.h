@@ -7,8 +7,8 @@
 #include "composer.h"
 
 
-void gui_select_group(int index, struct KeyButton keys[]);
-void gui_create(struct KeyButton groups[]);
+void gui_select_group(int index, struct key_button_t keys[]);
+void gui_create(struct group_button_t groups[]);
 void gui_destroy();
 
 

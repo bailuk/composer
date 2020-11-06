@@ -9,88 +9,129 @@
 #include "composer_event.h"
 
 
-// key groups
-struct KeyButton BRACKETS[GROUP_SIZE] = {
-{GDK_KEY_a, GDK_KEY_bracketleft,    "", NULL}, 
-{GDK_KEY_s, GDK_KEY_bracketright,   "", NULL},
-{GDK_KEY_d, GDK_KEY_parenleft,      "", NULL},
-{GDK_KEY_f, GDK_KEY_parenright,     "", NULL},
-{GDK_KEY_j, GDK_KEY_less,           "", NULL},
-{GDK_KEY_k, GDK_KEY_greater,        "", NULL},
-{GDK_KEY_l, GDK_KEY_braceleft,      "", NULL},
-{GDK_KEY_odiaeresis, GDK_KEY_braceright,"", NULL}
+struct group_button_t GROUPS[] =
+{
+        {       // brackets
+                {"", GDK_KEY_q},
+                {
+                        {{"", GDK_KEY_a}, GDK_KEY_bracketleft},
+                        {{"", GDK_KEY_s}, GDK_KEY_bracketright},
+                        {{"", GDK_KEY_d}, GDK_KEY_parenleft},
+                        {{"", GDK_KEY_f}, GDK_KEY_parenright},
+                        {{"", GDK_KEY_j}, GDK_KEY_less},
+                        {{"", GDK_KEY_k}, GDK_KEY_greater},
+                        {{"", GDK_KEY_l}, GDK_KEY_braceleft},
+                        {{"", GDK_KEY_odiaeresis}, GDK_KEY_braceright }
+                }
+        },
+        {       // norwegian
+                {"", GDK_KEY_w},
+                {
+                        {{"", GDK_KEY_a}, GDK_KEY_bracketleft},
+                        {{"", GDK_KEY_s}, GDK_KEY_Oslash},
+                        {{"", GDK_KEY_d}, GDK_KEY_Aring},
+                        {{"", GDK_KEY_f}, GDK_KEY_AE},
+                        {{"", GDK_KEY_j}, GDK_KEY_less},
+                        {{"", GDK_KEY_k}, GDK_KEY_ae},
+                        {{"", GDK_KEY_l}, GDK_KEY_aring},
+                        {{"", GDK_KEY_odiaeresis}, GDK_KEY_oslash }
+                }
+        },
+        {       // german
+                {"", GDK_KEY_e},
+                {
+                        {{"", GDK_KEY_a}, GDK_KEY_Adiaeresis},
+                        {{"", GDK_KEY_s}, GDK_KEY_adiaeresis},
+                        {{"", GDK_KEY_d}, GDK_KEY_parenleft},
+                        {{"", GDK_KEY_f}, GDK_KEY_Aring},
+                        {{"", GDK_KEY_j}, GDK_KEY_less},
+                        {{"", GDK_KEY_k}, GDK_KEY_greater},
+                        {{"", GDK_KEY_l}, GDK_KEY_braceleft},
+                        {{"", GDK_KEY_odiaeresis}, GDK_KEY_braceright }
+                }
+        },
+        {       // french
+                {"", GDK_KEY_r},
+                {
+                        {{"", GDK_KEY_a}, GDK_KEY_eacute},
+                        {{"", GDK_KEY_s}, GDK_KEY_Eacute},
+                        {{"", GDK_KEY_d}, GDK_KEY_agrave},
+                        {{"", GDK_KEY_f}, GDK_KEY_Agrave},
+                        {{"", GDK_KEY_j}, GDK_KEY_less},
+                        {{"", GDK_KEY_k}, GDK_KEY_greater},
+                        {{"", GDK_KEY_l}, GDK_KEY_ccedilla},
+                        {{"", GDK_KEY_odiaeresis}, GDK_KEY_egrave }
+                }
+        },
+        {       // brackets
+                {"", GDK_KEY_u},
+                {
+                        {{"", GDK_KEY_a}, GDK_KEY_bracketleft},
+                        {{"", GDK_KEY_s}, GDK_KEY_bracketright},
+                        {{"", GDK_KEY_d}, GDK_KEY_parenleft},
+                        {{"", GDK_KEY_f}, GDK_KEY_parenright},
+                        {{"", GDK_KEY_j}, GDK_KEY_less},
+                        {{"", GDK_KEY_k}, GDK_KEY_greater},
+                        {{"", GDK_KEY_l}, GDK_KEY_braceleft},
+                        {{"", GDK_KEY_odiaeresis}, GDK_KEY_braceright }
+                }
+        },
+        {       // brackets
+                {"", GDK_KEY_i},
+                {
+                        {{"", GDK_KEY_a}, GDK_KEY_bracketleft},
+                        {{"", GDK_KEY_s}, GDK_KEY_bracketright},
+                        {{"", GDK_KEY_d}, GDK_KEY_parenleft},
+                        {{"", GDK_KEY_f}, GDK_KEY_parenright},
+                        {{"", GDK_KEY_j}, GDK_KEY_less},
+                        {{"", GDK_KEY_k}, GDK_KEY_greater},
+                        {{"", GDK_KEY_l}, GDK_KEY_braceleft},
+                        {{"", GDK_KEY_odiaeresis}, GDK_KEY_braceright }
+                }
+        },
+        {       // brackets
+                {"", GDK_KEY_o},
+                {
+                        {{"", GDK_KEY_a}, GDK_KEY_bracketleft},
+                        {{"", GDK_KEY_s}, GDK_KEY_bracketright},
+                        {{"", GDK_KEY_d}, GDK_KEY_parenleft},
+                        {{"", GDK_KEY_f}, GDK_KEY_parenright},
+                        {{"", GDK_KEY_j}, GDK_KEY_less},
+                        {{"", GDK_KEY_k}, GDK_KEY_greater},
+                        {{"", GDK_KEY_l}, GDK_KEY_braceleft},
+                        {{"", GDK_KEY_odiaeresis}, GDK_KEY_braceright }
+                }
+        },
+        {       // brackets
+                {"", GDK_KEY_p},
+                {
+                        {{"", GDK_KEY_a}, GDK_KEY_bracketleft},
+                        {{"", GDK_KEY_s}, GDK_KEY_bracketright},
+                        {{"", GDK_KEY_d}, GDK_KEY_parenleft},
+                        {{"", GDK_KEY_f}, GDK_KEY_parenright},
+                        {{"", GDK_KEY_j}, GDK_KEY_less},
+                        {{"", GDK_KEY_k}, GDK_KEY_greater},
+                        {{"", GDK_KEY_l}, GDK_KEY_braceleft},
+                        {{"", GDK_KEY_odiaeresis}, GDK_KEY_braceright }
+                }
+        },
+
 };
 
 
-struct KeyButton NORWEGIAN[GROUP_SIZE] = {
-{GDK_KEY_a, GDK_KEY_bracketleft,    "", NULL}, 
-{GDK_KEY_s, GDK_KEY_Oslash,         "", NULL},
-{GDK_KEY_d, GDK_KEY_Aring,          "", NULL},
-{GDK_KEY_f, GDK_KEY_AE,             "", NULL},
-{GDK_KEY_j, GDK_KEY_ae,             "", NULL},
-{GDK_KEY_k, GDK_KEY_aring,          "", NULL},
-{GDK_KEY_l, GDK_KEY_Ooblique,       "", NULL},
-{GDK_KEY_odiaeresis, GDK_KEY_oslash,"", NULL}
-};
-
-
-struct KeyButton GERMAN[GROUP_SIZE] = {
-{GDK_KEY_a, GDK_KEY_Adiaeresis,    "", NULL},
-{GDK_KEY_s, GDK_KEY_adiaeresis,    "", NULL}, 
-{GDK_KEY_d, GDK_KEY_Aring,         "", NULL},
-{GDK_KEY_f, GDK_KEY_AE,            "", NULL},
-{GDK_KEY_j, GDK_KEY_Udiaeresis,    "", NULL},
-{GDK_KEY_k, GDK_KEY_udiaeresis,    "", NULL},
-{GDK_KEY_l, GDK_KEY_Odiaeresis,    "", NULL},
-{GDK_KEY_odiaeresis, GDK_KEY_odiaeresis,"", NULL}
-};
-
-struct KeyButton FRENCH[GROUP_SIZE] = {
-{GDK_KEY_a, GDK_KEY_eacute,         "", NULL}, 
-{GDK_KEY_s, GDK_KEY_Eacute,         "", NULL},
-{GDK_KEY_d, GDK_KEY_agrave,         "", NULL},
-{GDK_KEY_f, GDK_KEY_Agrave,         "", NULL},
-{GDK_KEY_j, GDK_KEY_ae,             "", NULL},
-{GDK_KEY_k, GDK_KEY_aring,          "", NULL},
-{GDK_KEY_l, GDK_KEY_ccedilla,       "", NULL},
-{GDK_KEY_odiaeresis, GDK_KEY_egrave,"", NULL}
-};
-
-struct KeyButton CODE[GROUP_SIZE] = {
-{GDK_KEY_a, GDK_KEY_dollar,         "", NULL}, 
-{GDK_KEY_s, GDK_KEY_numbersign,     "", NULL},
-{GDK_KEY_d, GDK_KEY_at,             "", NULL},
-{GDK_KEY_f, GDK_KEY_asterisk,       "", NULL},
-{GDK_KEY_j, GDK_KEY_ae,             "", NULL},
-{GDK_KEY_k, GDK_KEY_aring,          "", NULL},
-{GDK_KEY_l, GDK_KEY_Ooblique,       "", NULL},
-{GDK_KEY_odiaeresis, GDK_KEY_oslash,"", NULL}
-};
-
-// key group row (top row)
-struct KeyButton GROUPS[GROUP_SIZE] = {
-{GDK_KEY_q, 0, "", BRACKETS},
-{GDK_KEY_w, 0, "", CODE},
-{GDK_KEY_e, 0, "", NORWEGIAN},
-{GDK_KEY_r, 0, "", FRENCH},
-{GDK_KEY_t, 0, "", GERMAN},
-{GDK_KEY_u, 0, "", BRACKETS},
-{GDK_KEY_i, 0, "", BRACKETS},
-{GDK_KEY_o, 0, "", BRACKETS},
-};
 
 
 guint gl_key_out=0;
 
 
-struct KeyButton *GL_current_keys;
+struct key_button_t *GL_current_keys;
 int gl_current_index;
 
 
 int key_button_index_from_key(guint keyval) 
 {
         for (int i=0; i< GROUP_SIZE; i++) {
-                if (GROUPS[i].key_in == keyval) {
+                if (GROUPS[i].button.key_in == keyval) {
                         return i;
                 }
         }
@@ -98,11 +139,11 @@ int key_button_index_from_key(guint keyval)
 }
 
 
-struct KeyButton *
+struct key_button_t *
 key_button_from_key(guint keyval) 
 {
         for (int i=0; i< GROUP_SIZE; i++) {
-                if (GL_current_keys[i].key_in == keyval) {
+                if (GL_current_keys[i].button.key_in == keyval) {
                         return &GL_current_keys[i];
                 }
         }
@@ -111,7 +152,7 @@ key_button_from_key(guint keyval)
 
 
 void set_to_group(int index) {
-        struct KeyButton* keys = GROUPS[index].keys;
+        struct key_button_t* keys = GROUPS[index].group;
 
         if (keys != NULL) {
                 GL_current_keys = keys;
@@ -125,7 +166,7 @@ void set_to_group(int index) {
 
 gboolean send_key_from_keyval(guint keyval) 
 {
-        struct KeyButton *key = key_button_from_key(keyval);
+        struct key_button_t *key = key_button_from_key(keyval);
 
         if (key) {
                 gl_key_out = key->key_out;
@@ -168,7 +209,7 @@ void load_settings()
 
 
 
-void save_settings() 
+void save_settings()
 {
         FILE *f = fopen("composer.rc", "w");
         if (f == NULL)	{
@@ -199,7 +240,7 @@ void send_key(guint key)
 }
 
 
-int main(int argc, char **argv) 
+int main(int argc, char **argv)
 {
         gtk_init(&argc, &argv);
         gui_create(GROUPS);

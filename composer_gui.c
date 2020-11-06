@@ -12,10 +12,14 @@ GtkWidget* add_button(GtkWidget *bbox, int index);
 void add_buttons(GtkWidget* bbox, GtkWidget* buttons[]);
 
 GtkWidget* create_bbox (char *title, GtkWidget* buttons[]);
-GtkWidget* create_vbox(GtkWidget *window, struct KeyButton groups[], GtkWidget* group_buttons[], GtkWidget* key_buttons[]); 
+GtkWidget* create_vbox(GtkWidget *window, struct group_button_t groups[], GtkWidget* group_buttons[], GtkWidget* key_buttons[]);
 
-void set_buttons(struct KeyButton keys[], GtkWidget* buttons[]);
-void button_init_label(struct KeyButton *key);
+
+void set_group_buttons(struct group_button_t groups[], GtkWidget* buttons[]);
+void set_buttons(struct key_button_t keys[], GtkWidget* buttons[]);
+
+
+void button_init_label(struct key_button_t *key);
 
 
 GtkWidget*
@@ -40,28 +44,27 @@ void add_buttons(GtkWidget* bbox, GtkWidget* buttons[])
 }
 
 
-
-void button_init_label(struct KeyButton *key)
+void button_init_group_label(struct group_button_t *group)
 {
-        struct KeyButton* keys = key->keys;
+        guint key_in  = group->button.key_in;
+        guint key_out = group->group[6].key_out;
 
-        guint key_in = key->key_in;
-        guint key_out;
+        g_snprintf(group->button.label, sizeof(group->button.label), "%lc :%lc", key_in, key_out);
+}
 
-        if (keys == NULL) {
-                key_out = key->key_out;
-        } else {
-                key_out = keys[6].key_out;
-        }
 
-        // %lc: wide character, wchar_t, gchar	
-        g_snprintf(key->label, sizeof(key->label), "%lc :%lc", key_in, key_out);   
+void button_init_label(struct key_button_t *key)
+{
+        guint key_in = key->button.key_in;
+        guint key_out = key->key_out;
+
+        g_snprintf(key->button.label, sizeof(key->button.label), "%lc :%lc", key_in, key_out);
 }
 
 
 
 
-void gui_select_group(int index, struct KeyButton keys[]) 
+void gui_select_group(int index, struct key_button_t keys[])
 {
         gboolean state;
 
@@ -80,11 +83,18 @@ void gui_select_group(int index, struct KeyButton keys[])
 }
 
 
-void set_buttons(struct KeyButton keys[], GtkWidget* buttons[]) 
-{
+void set_buttons(struct key_button_t keys[], GtkWidget* buttons[]) {
         for (int i=0; i<GROUP_SIZE; i++) {
                 button_init_label(&keys[i]);
-                gtk_button_set_label(GTK_BUTTON(buttons[i]), keys[i].label);
+                gtk_button_set_label(GTK_BUTTON(buttons[i]), keys[i].button.label);
+        }
+}
+
+void set_group_buttons(struct group_button_t groups[], GtkWidget* buttons[])
+{
+        for (int i=0; i<GROUP_SIZE; i++) {
+                button_init_group_label(&groups[i]);
+                gtk_button_set_label(GTK_BUTTON(buttons[i]), groups[i].button.label);
         }
 }
 
@@ -113,8 +123,8 @@ create_bbox (char *title, GtkWidget* buttons[])
 }
 
 
-GtkWidget*    
-create_vbox(GtkWidget *window, struct KeyButton groups[], GtkWidget* group_buttons[], GtkWidget* key_buttons[]) 
+GtkWidget*
+create_vbox(GtkWidget *window, struct group_button_t groups[], GtkWidget* group_buttons[], GtkWidget* key_buttons[])
 {
         GtkWidget *result = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add (GTK_CONTAINER (window), result);
@@ -125,11 +135,11 @@ create_vbox(GtkWidget *window, struct KeyButton groups[], GtkWidget* group_butto
                                 create_bbox ("Group", group_buttons),
                                 TRUE, TRUE, 5);
 
-                        gtk_box_pack_start (GTK_BOX (result),
+        gtk_box_pack_start (GTK_BOX (result),
                         create_bbox ("Key", key_buttons),
                         TRUE, TRUE, 5);
 
-        set_buttons(groups, group_buttons);
+        set_group_buttons(groups, group_buttons);
 
 
         return result;
@@ -138,7 +148,7 @@ create_vbox(GtkWidget *window, struct KeyButton groups[], GtkWidget* group_butto
 
 
 
-void gui_create(struct KeyButton groups[])
+void gui_create(struct group_button_t groups[])
 {
         gl_main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
@@ -168,3 +178,5 @@ void gui_destroy()
 {
         gtk_widget_destroy(gl_main_window);
 }
+
+
