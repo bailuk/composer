@@ -9,13 +9,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install meson build system
+    - name: Install dependencies
       run: sudo -E apt-get -y install meson libgtk-3-dev libxdo-dev
       
-    - name: Create Build Environment
+    - name: Setup build
       run: meson build
       
-    - name: Compile with ninja
-      shell: bash
-      working-directory: ${{runner.workspace}}/build
-      run: ninja
+    - name: Compile
+      run: cd build && ninja
