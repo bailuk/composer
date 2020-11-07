@@ -54,3 +54,6 @@ dkms.conf
 # Build targets
 build/
 
+
+# Config file
+composer.rc

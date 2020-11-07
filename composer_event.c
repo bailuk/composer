@@ -7,13 +7,11 @@
 
 gboolean event_lock = FALSE;
 
-void on_button_toggled (GtkToggleButton *source, gpointer user_data) {
+void on_group_button_toggled (GtkToggleButton* source, gpointer user_data) {
         if (event_lock == FALSE) {
                 event_lock = TRUE;
                 
-                if (gtk_toggle_button_get_active (source) == TRUE) {
-                        set_to_group((int)user_data);
-                }
+                set_active_group(GPOINTER_TO_INT(user_data));
 
                 event_lock = FALSE;
         }
@@ -21,10 +19,23 @@ void on_button_toggled (GtkToggleButton *source, gpointer user_data) {
 
 
 
-gboolean on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer data) 
+void on_key_button_toggled (GtkToggleButton* source, gpointer user_data) {
+        if (event_lock == FALSE) {
+                event_lock = TRUE;
+
+                if (gtk_toggle_button_get_active (source) == TRUE) {
+                        gui_select_key(GPOINTER_TO_INT(user_data));
+                }
+
+                event_lock = FALSE;
+        }
+}
+
+
+gboolean on_key_press (GtkWidget* widget, GdkEventKey* event, gpointer data)
 {
     if (send_key_from_keyval(event->keyval) || 
-            !set_to_group_from_keyval(event->keyval)) {
+            !set_active_group_from_keyval(event->keyval)) {
                     gui_destroy();
 
 
@@ -33,7 +44,7 @@ gboolean on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer data)
 }
 
 
-int on_focus_out(GtkWidget *w, void *p) {
+int on_focus_out(GtkWidget* w, void* p) {
         gui_destroy();
         return FALSE;
 }
