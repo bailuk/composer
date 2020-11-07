@@ -9,6 +9,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install meson build system
+      run: sudo -E apt-get -y install meson ninja
+      
     - name: Create Build Environment
       run: meson build
       
