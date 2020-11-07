@@ -1,9 +1,12 @@
+![Meson](https://github.com/bailuk/composer/workflows/Meson/badge.svg)
+
 # composer
 Minimalistic GUI key composer
 
 # dependencies
-libgtk-3-dev
-libxdo3 from [xdotool](https://github.com/jordansissel/xdotool)
+- [meson](https://mesonbuild.com)
+- [libgtk-3-dev](https://www.gtk.org)
+- [libxdo-dev](https://github.com/jordansissel/xdotool)
 
 # install and run
 ```shell
