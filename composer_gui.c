@@ -50,6 +50,16 @@ void add_group_buttons(GtkWidget* bbox)
 }
 
 
+void add_settings_buttons(GtkWidget* bbox)
+{
+        GtkWidget* result = gtk_toggle_button_new_with_label ("Change input key");
+        gtk_container_add (GTK_CONTAINER (bbox), result);
+
+        result = gtk_toggle_button_new_with_label ("Change output key");
+        gtk_container_add (GTK_CONTAINER (bbox), result);
+
+}
+
 
 GtkWidget*
 add_key_button(GtkWidget *bbox, int index)
@@ -63,6 +73,8 @@ add_key_button(GtkWidget *bbox, int index)
 
         return result;
 }
+
+
 
 
 void add_key_buttons(GtkWidget* bbox)
@@ -175,6 +187,15 @@ create_key_frame()
 
 
 GtkWidget*
+create_settings_frame()
+{
+        GtkWidget *result = gtk_frame_new ("Settings");
+        add_settings_buttons(create_bbox(result));
+
+        return result;
+}
+
+GtkWidget*
 create_vbox(GtkWidget *window, struct group_button_t groups[])
 {
         GtkWidget *result = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
@@ -187,6 +208,11 @@ create_vbox(GtkWidget *window, struct group_button_t groups[])
 
         gtk_box_pack_start (GTK_BOX (result),
                         create_key_frame(),
+                        TRUE, TRUE, 5);
+
+
+        gtk_box_pack_start (GTK_BOX (result),
+                        create_settings_frame(),
                         TRUE, TRUE, 5);
 
         set_group_buttons(groups);
