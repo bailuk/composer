@@ -134,6 +134,20 @@ struct configuration_t configuration =
 };
 
 
+gboolean change_key(guint keyval)
+{
+        if (configuration.state == change_key_group) {
+                configuration.groups[configuration.selected_group].button.key_in = keyval;
+
+                configuration.state = input;
+                gui_set_config_label (&configuration);
+                gui_set_group_buttons(configuration.groups);
+                gui_select_group (&configuration);
+                return TRUE;
+        }
+        return FALSE;
+}
+
 
 int get_group_index_from_key(guint keyval)
 {
@@ -144,6 +158,8 @@ int get_group_index_from_key(guint keyval)
         }
         return -1;
 }
+
+
 
 
 int get_key_index_from_key(guint keyval)

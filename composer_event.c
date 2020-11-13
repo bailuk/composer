@@ -38,13 +38,22 @@ void on_key_button_toggled (GtkToggleButton* source, gpointer user_data)
 
 gboolean on_key_press (GtkWidget* widget, GdkEventKey* event, gpointer data)
 {
-    if (send_key_from_keyval(event->keyval) || 
-            !set_active_group_from_keyval(event->keyval)) {
-                    gui_destroy();
 
+        if (change_key(event->keyval)) {
+                return FALSE;
+        }
 
-    }
-    return FALSE;
+        if (send_key_from_keyval(event->keyval)) {
+                gui_destroy();
+                return FALSE;
+        }
+
+        if(!set_active_group_from_keyval(event->keyval)) {
+                gui_destroy();
+                return FALSE;
+        }
+
+        return FALSE;
 }
 
 void on_change_key_in (GtkToggleButton *source, gpointer user_data) {
@@ -53,9 +62,9 @@ void on_change_key_in (GtkToggleButton *source, gpointer user_data) {
         if (config->state != input) {
                 config->state = input;
         } else {
-                config->state = change_key_in;
+                config->state = change_key_group;
         }
-
+        gui_set_config_label(config);
 }
 
 
