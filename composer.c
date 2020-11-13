@@ -8,8 +8,10 @@
 #include "composer_gui.h"
 #include "composer_event.h"
 
-struct key_button_t KEYS[GROUP_SIZE] =
+
+struct configuration_t configuration =
 {
+{ // struct key_button_t KEYS[GROUP_SIZE] =
         {"", GDK_KEY_a},
         {"", GDK_KEY_s},
         {"", GDK_KEY_d},
@@ -18,9 +20,7 @@ struct key_button_t KEYS[GROUP_SIZE] =
         {"", GDK_KEY_k},
         {"", GDK_KEY_l},
         {"", GDK_KEY_y}
-};
-
-struct group_button_t GROUPS[GROUP_SIZE] =
+},
 {
         {       // brackets
                 {"", GDK_KEY_q},
@@ -126,30 +126,19 @@ struct group_button_t GROUPS[GROUP_SIZE] =
                         GDK_KEY_braceright
                 }
         },
-};
-
-
-
-
-//guint gl_key_to_send=0;
-
-
-//struct group_button_t* gl_selected_group;
-//int gl_selected_group_index=-1;
-
-struct configuration_t configuration = {
-        NULL,  // group
-        NULL,  // key
-        -1,    // index
+},
+        0,    // index
         0,     // key to send
         input  // state
+
 };
+
 
 
 int get_group_index_from_key(guint keyval)
 {
         for (int i=0; i< GROUP_SIZE; i++) {
-                if (GROUPS[i].button.key_in == keyval) {
+                if (configuration.groups[i].button.key_in == keyval) {
                         return i;
                 }
         }
@@ -160,7 +149,7 @@ int get_group_index_from_key(guint keyval)
 int get_key_index_from_key(guint keyval)
 {
         for (int i=0; i< GROUP_SIZE; i++) {
-                if (KEYS[i].key_in == keyval) {
+                if (configuration.keys[i].key_in == keyval) {
                         return i;
                 }
         }
@@ -170,23 +159,23 @@ int get_key_index_from_key(guint keyval)
 
 // Sets global group variables. And activates group on GUI.
 void set_active_group(int index) {
-        configuration.selected_group = &GROUPS[index];
-        configuration.selected_group_index = index;
 
-        gui_select_group(index, KEYS, configuration.selected_group);
+        printf("set_active_group, index: %d\n", index);
+        configuration.selected_group = index;
+        gui_select_group(&configuration);
 }
 
 
 
 // Set key to send to global variable.
 // This key will be sent right before this application terminates.
-gboolean send_key_from_keyval(guint keyval) 
+gboolean send_key_from_keyval(guint keyval)
 {
 
         int index = get_key_index_from_key(keyval);
 
         if (index>-1) {
-                configuration.key_to_send = configuration.selected_group->keys_out[index];
+                configuration.key_to_send = configuration.groups[configuration.selected_group].keys_out[index];
                 return TRUE;
         }
         return FALSE;
@@ -234,7 +223,7 @@ void save_settings()
         if (f == NULL)	{
                 perror("fopen");
         } else {
-                fprintf(f, "%d\n", configuration.selected_group_index);
+                fprintf(f, "%d\n", configuration.selected_group);
                 fclose(f);
         }
 }
@@ -263,8 +252,9 @@ void send_key(guint key)
 
 int main(int argc, char **argv)
 {
+
         gtk_init(&argc, &argv);
-        gui_create(GROUPS);
+        gui_create(&configuration);
         load_settings();
         gtk_main();
 

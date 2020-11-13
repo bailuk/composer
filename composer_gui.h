@@ -8,8 +8,8 @@
 
 
 void gui_select_key(int index);
-void gui_select_group(int index, struct key_button_t keys[], struct group_button_t* group);
-void gui_create(struct group_button_t groups[]);
+void gui_select_group(struct configuration_t* configuration);
+void gui_create(struct configuration_t* configuration);
 void gui_destroy();
 
 

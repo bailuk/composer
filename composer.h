@@ -19,7 +19,7 @@ gboolean send_key_from_keyval(guint keyval);
 
 
 struct key_button_t {
-        gchar label[10];       // label that gets displayed to the user
+        gchar label[15];       // label that gets displayed to the user
         guint key_in;          // button to select key or key group
 };
 
@@ -40,10 +40,10 @@ enum state_t {
 
 
 struct configuration_t {
-        struct key_button_t*   selected_key;
-        struct group_button_t* selected_group;
+        struct key_button_t     keys[GROUP_SIZE];
+        struct group_button_t   groups[GROUP_SIZE];
 
-        guint selected_group_index;
+        guint selected_group;
         guint key_to_send;
 
         enum state_t state;

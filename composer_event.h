@@ -6,6 +6,8 @@
 
 void on_group_button_toggled (GtkToggleButton *source, gpointer user_data);
 void on_key_button_toggled (GtkToggleButton *source, gpointer user_data);
+void on_change_key_in (GtkToggleButton *source, gpointer user_data);
+void on_change_key_out (GtkToggleButton *source, gpointer user_data);
 
 gboolean on_key_press (GtkWidget *widget, GdkEventKey *event, gpointer data);
 int on_focus_out(GtkWidget *w, void *p);
