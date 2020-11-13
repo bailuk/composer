@@ -31,5 +31,23 @@ struct group_button_t {
 };
 
 
+enum state_t {
+        input,
+        change_key_group,
+        change_key_in,
+        change_key_out
+};
+
+
+struct configuration_t {
+        struct key_button_t*   selected_key;
+        struct group_button_t* selected_group;
+
+        guint selected_group_index;
+        guint key_to_send;
+
+        enum state_t state;
+};
+
 
 #endif

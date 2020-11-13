@@ -131,11 +131,20 @@ struct group_button_t GROUPS[GROUP_SIZE] =
 
 
 
-guint gl_key_to_send=0;
+//guint gl_key_to_send=0;
 
 
-struct group_button_t* gl_selected_group;
-int gl_selected_group_index=-1;
+//struct group_button_t* gl_selected_group;
+//int gl_selected_group_index=-1;
+
+struct configuration_t configuration = {
+        NULL,  // group
+        NULL,  // key
+        -1,    // index
+        0,     // key to send
+        input  // state
+};
+
 
 int get_group_index_from_key(guint keyval)
 {
@@ -161,10 +170,10 @@ int get_key_index_from_key(guint keyval)
 
 // Sets global group variables. And activates group on GUI.
 void set_active_group(int index) {
-        gl_selected_group = &GROUPS[index];
-        gl_selected_group_index = index;
+        configuration.selected_group = &GROUPS[index];
+        configuration.selected_group_index = index;
 
-        gui_select_group(index, KEYS, gl_selected_group);
+        gui_select_group(index, KEYS, configuration.selected_group);
 }
 
 
@@ -177,7 +186,7 @@ gboolean send_key_from_keyval(guint keyval)
         int index = get_key_index_from_key(keyval);
 
         if (index>-1) {
-                gl_key_to_send = gl_selected_group->keys_out[index];
+                configuration.key_to_send = configuration.selected_group->keys_out[index];
                 return TRUE;
         }
         return FALSE;
@@ -225,7 +234,7 @@ void save_settings()
         if (f == NULL)	{
                 perror("fopen");
         } else {
-                fprintf(f, "%d\n", gl_selected_group_index);
+                fprintf(f, "%d\n", configuration.selected_group_index);
                 fclose(f);
         }
 }
@@ -259,8 +268,8 @@ int main(int argc, char **argv)
         load_settings();
         gtk_main();
 
-        if (gl_key_to_send != 0) {
-                send_key(gl_key_to_send);
+        if (configuration.key_to_send != 0) {
+                send_key(configuration.key_to_send);
         }
 
         save_settings();
