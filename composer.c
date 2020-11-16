@@ -15,10 +15,22 @@ struct context_t configuration;
 
 gboolean change_key(guint keyval)
 {
-        if (configuration.state == change_key_group) {
-                configuration.groups[configuration.selected_group].button.key_in = keyval;
+        if (configuration.change_key) {
 
-                configuration.state = input;
+                configuration.change_key = FALSE;
+
+                if (keyval != GDK_KEY_Escape) {
+
+                        if (configuration.selected_key > -1) {
+                                configuration.keys[configuration.selected_key].key_in = keyval;
+                        } else {
+
+                                configuration.groups[configuration.selected_group].button.key_in = keyval;
+                        }
+                }
+
+                configuration.selected_key = -1;
+
                 gui_set_config_label (&configuration);
                 gui_set_group_buttons(configuration.groups);
                 gui_select_group (&configuration);
@@ -54,14 +66,30 @@ int get_key_index_from_key(guint keyval)
 
 void set_active_group(int index)
 {
+        configuration.change_key = FALSE;
+
         if (index < 0 || index >= GROUP_SIZE) {
                 index = 0;
         }
 
         configuration.selected_group = index;
         gui_select_group(&configuration);
+        gui_set_config_label (&configuration);
 }
 
+void set_active_key(int index)
+{
+        configuration.change_key = FALSE;
+
+        if (index < 0 || index >= GROUP_SIZE) {
+                index = -1;
+        }
+
+        printf("key index: %i\n", index);
+        configuration.selected_key = index;
+        gui_select_key(&configuration);
+        gui_set_config_label (&configuration);
+}
 
 
 // Set key to send to global variable.

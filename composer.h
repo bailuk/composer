@@ -9,6 +9,8 @@
 
 
 void set_active_group(int index);
+void set_active_key(int index);
+
 gboolean set_active_group_from_keyval(guint keyval);
 gboolean send_key_from_keyval(guint keyval);
 
@@ -32,22 +34,16 @@ struct group_button_t {
 };
 
 
-enum state_t {
-        input,
-        change_key_group,
-        change_key_in,
-        change_key_out
-};
-
 
 struct context_t {
         struct key_button_t     keys[GROUP_SIZE];
         struct group_button_t   groups[GROUP_SIZE];
 
-        guint selected_group;
+        int selected_group;
+        int selected_key;
         guint key_to_send;
 
-        enum state_t state;
+        gboolean change_key;
 };
 
 

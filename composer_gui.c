@@ -145,16 +145,16 @@ void gui_select_button(int index, GtkWidget* buttons[]) {
 }
 
 
-void gui_select_key(int index)
+void gui_select_key(struct context_t* context)
 {
-        gui_select_button(index, gl_key_buttons);
+        gui_select_button(context->selected_key, gl_key_buttons);
 }
 
 
 void gui_select_group(struct context_t* configuration)
 {
         gui_select_button(configuration->selected_group, gl_group_buttons);
-        gui_select_key(-1);
+        set_active_key(-1);
 
         set_key_buttons(configuration->keys, &configuration->groups[configuration->selected_group]);
 
@@ -283,13 +283,20 @@ void gui_destroy()
 }
 
 
-void gui_set_config_label(struct context_t* config)
+void gui_set_config_label(struct context_t* context)
 {
-        if (config->state == change_key_group || config->state == change_key_in) {
-                gtk_button_set_label(GTK_BUTTON(gl_config_key_in), "> Change Key <");
-        } else {
-                gtk_button_set_label(GTK_BUTTON(gl_config_key_in), "Change Key");
+        char* label = "Change key";
+
+        if (context->change_key) {
+                if (context->selected_key > -1) {
+                        label = "Press new key";
+
+                } else {
+                        label = "Press new group-key";
+                }
         }
+        printf("key index %s, %i\n", label, context->selected_key);
+        gtk_button_set_label(GTK_BUTTON(gl_config_key_in), label);
 }
 
 

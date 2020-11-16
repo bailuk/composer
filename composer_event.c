@@ -24,11 +24,15 @@ void on_group_button_toggled (GtkToggleButton* source, gpointer user_data)
 
 void on_key_button_toggled (GtkToggleButton* source, gpointer user_data)
 {
+        int index = GPOINTER_TO_INT(user_data);
+
         if (event_lock == FALSE) {
                 event_lock = TRUE;
 
                 if (gtk_toggle_button_get_active (source) == TRUE) {
-                        gui_select_key(GPOINTER_TO_INT(user_data));
+                        set_active_key(index);
+                } else {
+                        set_active_key(-1);
                 }
 
                 event_lock = FALSE;
@@ -57,25 +61,19 @@ gboolean on_key_press (GtkWidget* widget, GdkEventKey* event, gpointer data)
 }
 
 void on_change_key_in (GtkToggleButton *source, gpointer user_data) {
-        struct context_t* config = (struct context_t*) user_data;
+        struct context_t* context = (struct context_t*) user_data;
 
-        if (config->state != input) {
-                config->state = input;
+        if (context->change_key == TRUE) {
+                context->change_key = FALSE;
         } else {
-                config->state = change_key_group;
+                context->change_key = TRUE;
         }
-        gui_set_config_label(config);
+        gui_set_config_label(context);
 }
 
 
 void on_change_key_out (GtkToggleButton *source, gpointer user_data) {
-        struct context_t* config = (struct context_t*) user_data;
-
-        if (config->state != input) {
-                config->state = input;
-        } else {
-                config->state = change_key_out;
-        }
+        struct context_t* context = (struct context_t*) user_data;
 
 }
 

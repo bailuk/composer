@@ -9,8 +9,8 @@
 
 void gui_init(int argc, char* argv[], struct context_t* context);
 
-void gui_select_key(int index);
-void gui_select_group(struct context_t* configuration);
+void gui_select_key(struct context_t* context);
+void gui_select_group(struct context_t* context);
 
 void gui_destroy();
 

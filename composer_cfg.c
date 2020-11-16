@@ -75,8 +75,6 @@ void set_defaults(struct context_t* context)
         }
         memcpy(context->groups[0].keys_out, NORSK, sizeof(NORSK));
         memcpy(context->groups[1].keys_out, BRACKETS, sizeof(BRACKETS));
-
-        context->state = input;
 }
 
 
