@@ -4,14 +4,22 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 
 
 
 #include "composer.h"
 #include "composer_cfg.h"
 
-int read_index();
-void write_index(int index);
+
+int read_context(struct context_t*);
+int write_context(struct context_t*);
+
+char* get_home_dir();
+char* get_conf_file();
+char* _get_conf_file();
 
 void set_defaults(struct context_t* context);
 
@@ -45,19 +53,15 @@ guint NORSK[GROUP_SIZE] = {
 };
 
 
-// Load index from settings and set active group
 void cfg_load(struct context_t* context)
 {
-        int index = read_index();
+        int size = read_context(context);
 
+        printf("size: %i - %i\n", size, (int)sizeof(struct context_t));
 
-
-        set_defaults(context);
-
-        if (index > -1 && index < GROUP_SIZE) {
-                context->selected_group = index;
+        if (size != sizeof (struct context_t)) {
+                set_defaults(context);
         }
-
 }
 
 
@@ -76,38 +80,82 @@ void set_defaults(struct context_t* context)
 }
 
 
-int read_index() {
+
+int read_context(struct context_t* context) {
         int result = 0;
-        FILE *f = fopen("composer.rc", "r");
+        FILE *f = fopen(get_conf_file(), "r");
 
 
         if (f == NULL) {
                 perror("fopen");
         } else {
+                result = fread(context, sizeof(struct context_t), 1, f);
                 fclose(f);
         }
-        return result;
+        return result * sizeof(struct context_t);
 }
-
 
 
 void cfg_save(struct context_t* context)
 {
-        write_index(context->selected_group);
+        write_context(context);
 }
 
 
 
-void write_index(int index)
+int write_context(struct context_t* context)
 {
-        FILE *f = fopen("composer.rc", "w");
+        int result = 0;
+
+        FILE *f = fopen(get_conf_file(), "w");
         if (f == NULL)	{
                 perror("fopen");
         } else {
-                fprintf(f, "%d\n", index);
+                result = fwrite(context, sizeof(struct context_t), 1, f);
                 fclose(f);
         }
+        return result * sizeof(struct context_t);
 }
 
 
+
+char* gl_conf_file = NULL;
+
+
+char* get_conf_file()
+{
+        if (gl_conf_file == NULL) {
+                gl_conf_file = _get_conf_file();
+        }
+        return gl_conf_file;
+
+}
+
+
+char* _get_conf_file()
+{
+        const char* file = "/.composer.rc";
+
+        char* home = get_home_dir();
+
+        int size = strlen(file) + strlen(home) + 1;
+        char* conf_file = malloc(size);
+
+        strcpy(conf_file, home);
+        strcat(conf_file, file);
+
+        return conf_file;
+}
+
+
+char* get_home_dir()
+{
+        char *homedir;
+
+        if ((homedir = getenv("HOME")) == NULL) {
+                homedir = "/tmp";
+        }
+
+        return homedir;
+}
 

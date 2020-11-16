@@ -52,10 +52,12 @@ int get_key_index_from_key(guint keyval)
 }
 
 
-// Sets global group variables. And activates group on GUI.
-void set_active_group(int index) {
+void set_active_group(int index)
+{
+        if (index < 0 || index >= GROUP_SIZE) {
+                index = 0;
+        }
 
-        printf("set_active_group, index: %d\n", index);
         configuration.selected_group = index;
         gui_select_group(&configuration);
 }

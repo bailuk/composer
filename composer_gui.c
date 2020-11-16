@@ -2,18 +2,20 @@
 #include "composer_gui.h"
 #include "composer_event.h"
 
-GtkWidget * gl_main_window;
+GtkWidget* gl_main_window;
 GtkWidget* gl_group_buttons[GROUP_SIZE];
 GtkWidget* gl_key_buttons[GROUP_SIZE];
 
 GtkWidget* gl_config_key_in;
 GtkWidget* gl_config_key_out;
+GtkWidget* gl_config_key_out_entry;
 
 
 void gui_create(struct context_t* configuration);
 
 GtkWidget* add_key_button(GtkWidget *bbox, int index);
 void add_key_buttons(GtkWidget* bbox);
+
 
 
 GtkWidget* add_group_button(GtkWidget *bbox, int index);
@@ -71,12 +73,15 @@ void add_settings_buttons(GtkWidget* bbox, struct context_t* config)
                     G_CALLBACK (on_change_key_in),
                     config);
 
+        gl_config_key_out_entry = gtk_entry_new();
+        gtk_container_add(GTK_CONTAINER(bbox), gl_config_key_out_entry);
+
+
         gl_config_key_out = gtk_button_new_with_label ("Change output key");
         gtk_container_add (GTK_CONTAINER (bbox), gl_config_key_out);
         g_signal_connect (gl_config_key_out, "clicked",
                     G_CALLBACK (on_change_key_out),
                     config);
-
 }
 
 
@@ -117,7 +122,6 @@ void button_init_label(struct key_button_t *key, guint key_out)
 {
         guint key_in = key->key_in;
 
-        printf("size: %lu\n", sizeof(key->label));
         g_snprintf(key->label, sizeof(key->label), "%lc :%lc", key_in, key_out);
 }
 
@@ -125,7 +129,6 @@ void button_init_label(struct key_button_t *key, guint key_out)
 void gui_select_button(int index, GtkWidget* buttons[]) {
         gboolean state;
 
-        //printf("gui_select_button\n");
         for (int i=0; i<GROUP_SIZE; i++) {
 
 
@@ -137,7 +140,6 @@ void gui_select_button(int index, GtkWidget* buttons[]) {
 
 
                 gtk_toggle_button_set_active((GtkToggleButton*)buttons[i], state);
-                //printf("gui_select_button state %i- %i\n", i, state);
         }
 
 }
@@ -154,15 +156,12 @@ void gui_select_group(struct context_t* configuration)
         gui_select_button(configuration->selected_group, gl_group_buttons);
         gui_select_key(-1);
 
-        printf("-> set_key_buttons %s\n",configuration->groups[configuration->selected_group].button.label);
-
         set_key_buttons(configuration->keys, &configuration->groups[configuration->selected_group]);
 
 }
 
 
 void set_key_buttons(struct key_button_t keys[], struct group_button_t* group) {
-        printf("set_key_buttons\n");
         for (int i=0; i<GROUP_SIZE; i++) {
                 button_init_label(&keys[i], group->keys_out[i]);
                 gtk_button_set_label(GTK_BUTTON(gl_key_buttons[i]), keys[i].label);
@@ -222,7 +221,7 @@ create_settings_frame(struct context_t* config)
 }
 
 GtkWidget*
-create_vbox(GtkWidget* window, struct context_t* configuration)
+create_vbox(GtkWidget* window, struct context_t* context)
 {
         GtkWidget *result = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add (GTK_CONTAINER (window), result);
@@ -238,10 +237,10 @@ create_vbox(GtkWidget* window, struct context_t* configuration)
 
 
         gtk_box_pack_start (GTK_BOX (result),
-                        create_settings_frame(configuration),
+                        create_settings_frame(context),
                         TRUE, TRUE, 5);
 
-        gui_set_group_buttons(configuration->groups);
+        gui_set_group_buttons(context->groups);
 
         return result;
 }
