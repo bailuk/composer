@@ -57,7 +57,7 @@ gboolean on_key_press (GtkWidget* widget, GdkEventKey* event, gpointer data)
 }
 
 void on_change_key_in (GtkToggleButton *source, gpointer user_data) {
-        struct configuration_t* config = (struct configuration_t*) user_data;
+        struct context_t* config = (struct context_t*) user_data;
 
         if (config->state != input) {
                 config->state = input;
@@ -69,7 +69,7 @@ void on_change_key_in (GtkToggleButton *source, gpointer user_data) {
 
 
 void on_change_key_out (GtkToggleButton *source, gpointer user_data) {
-        struct configuration_t* config = (struct configuration_t*) user_data;
+        struct context_t* config = (struct context_t*) user_data;
 
         if (config->state != input) {
                 config->state = input;

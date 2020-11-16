@@ -10,6 +10,8 @@ GtkWidget* gl_config_key_in;
 GtkWidget* gl_config_key_out;
 
 
+void gui_create(struct context_t* configuration);
+
 GtkWidget* add_key_button(GtkWidget *bbox, int index);
 void add_key_buttons(GtkWidget* bbox);
 
@@ -20,13 +22,23 @@ void add_group_buttons(GtkWidget* bbox);
 GtkWidget* create_key_frame();
 GtkWidget* create_group_frame();
 GtkWidget* create_bbox(GtkWidget* parent);
-GtkWidget* create_vbox(GtkWidget* window, struct configuration_t* configuration);
+GtkWidget* create_vbox(GtkWidget* window, struct context_t* configuration);
 
 
 void set_key_buttons(struct key_button_t keys[], struct group_button_t* group);
 
 
 void button_init_label(struct key_button_t *key, guint key_out);
+
+
+
+void gui_init(int argc, char* argv[], struct context_t* context) {
+        gtk_init(&argc, &argv);
+        gui_create(context);
+        gui_select_group(context);
+        gtk_main();
+}
+
 
 
 GtkWidget*
@@ -51,7 +63,7 @@ void add_group_buttons(GtkWidget* bbox)
 }
 
 
-void add_settings_buttons(GtkWidget* bbox, struct configuration_t* config)
+void add_settings_buttons(GtkWidget* bbox, struct context_t* config)
 {
         gl_config_key_in = gtk_button_new_with_label ("Change input key");
         gtk_container_add (GTK_CONTAINER (bbox), gl_config_key_in);
@@ -137,7 +149,7 @@ void gui_select_key(int index)
 }
 
 
-void gui_select_group(struct configuration_t* configuration)
+void gui_select_group(struct context_t* configuration)
 {
         gui_select_button(configuration->selected_group, gl_group_buttons);
         gui_select_key(-1);
@@ -201,7 +213,7 @@ create_key_frame()
 
 
 GtkWidget*
-create_settings_frame(struct configuration_t* config)
+create_settings_frame(struct context_t* config)
 {
         GtkWidget *result = gtk_frame_new ("Settings");
         add_settings_buttons(create_bbox(result), config);
@@ -210,7 +222,7 @@ create_settings_frame(struct configuration_t* config)
 }
 
 GtkWidget*
-create_vbox(GtkWidget* window, struct configuration_t* configuration)
+create_vbox(GtkWidget* window, struct context_t* configuration)
 {
         GtkWidget *result = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
         gtk_container_add (GTK_CONTAINER (window), result);
@@ -237,7 +249,7 @@ create_vbox(GtkWidget* window, struct configuration_t* configuration)
 
 
 
-void gui_create(struct configuration_t* config)
+void gui_create(struct context_t* config)
 {
         // init global configuration object
 
@@ -272,7 +284,7 @@ void gui_destroy()
 }
 
 
-void gui_set_config_label(struct configuration_t* config)
+void gui_set_config_label(struct context_t* config)
 {
         if (config->state == change_key_group || config->state == change_key_in) {
                 gtk_button_set_label(GTK_BUTTON(gl_config_key_in), "> Change Key <");

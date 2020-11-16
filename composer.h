@@ -40,7 +40,7 @@ enum state_t {
 };
 
 
-struct configuration_t {
+struct context_t {
         struct key_button_t     keys[GROUP_SIZE];
         struct group_button_t   groups[GROUP_SIZE];
 

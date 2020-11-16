@@ -7,131 +7,10 @@
 #include "composer.h"
 #include "composer_gui.h"
 #include "composer_event.h"
+#include "composer_cfg.h"
 
 
-struct configuration_t configuration =
-{
-{ // struct key_button_t KEYS[GROUP_SIZE] =
-        {"", GDK_KEY_a},
-        {"", GDK_KEY_s},
-        {"", GDK_KEY_d},
-        {"", GDK_KEY_f},
-        {"", GDK_KEY_j},
-        {"", GDK_KEY_k},
-        {"", GDK_KEY_l},
-        {"", GDK_KEY_y}
-},
-{
-        {       // brackets
-                {"", GDK_KEY_q},
-                {
-                        GDK_KEY_bracketleft,
-                        GDK_KEY_bracketright,
-                        GDK_KEY_parenleft,
-                        GDK_KEY_parenright,
-                        GDK_KEY_less,
-                        GDK_KEY_greater,
-                        GDK_KEY_braceleft,
-                        GDK_KEY_braceright
-                }
-        },
-        {       // norwegian
-                {"", GDK_KEY_w},
-                {
-                        GDK_KEY_bracketleft,
-                        GDK_KEY_Oslash,
-                        GDK_KEY_Aring,
-                        GDK_KEY_AE,
-                        GDK_KEY_less,
-                        GDK_KEY_ae,
-                        GDK_KEY_aring,
-                        GDK_KEY_oslash
-                }
-        },
-        {       // german
-                {"", GDK_KEY_e},
-                {
-                        GDK_KEY_Adiaeresis,
-                        GDK_KEY_adiaeresis,
-                        GDK_KEY_parenleft,
-                        GDK_KEY_Aring,
-                        GDK_KEY_less,
-                        GDK_KEY_greater,
-                        GDK_KEY_braceleft,
-                        GDK_KEY_braceright
-                }
-        },
-        {       // french
-                {"", GDK_KEY_r},
-                {
-                        GDK_KEY_eacute,
-                        GDK_KEY_Eacute,
-                        GDK_KEY_agrave,
-                        GDK_KEY_Agrave,
-                        GDK_KEY_less,
-                        GDK_KEY_greater,
-                        GDK_KEY_ccedilla,
-                        GDK_KEY_egrave
-                }
-        },
-        {       // brackets
-                {"", GDK_KEY_u},
-                {
-                        GDK_KEY_bracketleft,
-                        GDK_KEY_bracketright,
-                        GDK_KEY_parenleft,
-                        GDK_KEY_parenright,
-                        GDK_KEY_less,
-                        GDK_KEY_greater,
-                        GDK_KEY_braceleft,
-                        GDK_KEY_braceright
-                }
-        },
-        {       // brackets
-                {"", GDK_KEY_i},
-                {
-                        GDK_KEY_bracketleft,
-                        GDK_KEY_bracketright,
-                        GDK_KEY_parenleft,
-                        GDK_KEY_parenright,
-                        GDK_KEY_less,
-                        GDK_KEY_greater,
-                        GDK_KEY_braceleft,
-                        GDK_KEY_braceright
-                }
-        },
-        {       // brackets
-                {"", GDK_KEY_o},
-                {
-                        GDK_KEY_bracketleft,
-                        GDK_KEY_bracketright,
-                        GDK_KEY_parenleft,
-                        GDK_KEY_parenright,
-                        GDK_KEY_less,
-                        GDK_KEY_greater,
-                        GDK_KEY_braceleft,
-                        GDK_KEY_braceright
-                }
-        },
-        {       // brackets
-                {"", GDK_KEY_p},
-                {
-                        GDK_KEY_bracketleft,
-                        GDK_KEY_bracketright,
-                        GDK_KEY_parenleft,
-                        GDK_KEY_parenright,
-                        GDK_KEY_less,
-                        GDK_KEY_greater,
-                        GDK_KEY_braceleft,
-                        GDK_KEY_braceright
-                }
-        },
-},
-        0,    // index
-        0,     // key to send
-        input  // state
-
-};
+struct context_t configuration;
 
 
 gboolean change_key(guint keyval)
@@ -211,40 +90,6 @@ gboolean set_active_group_from_keyval(guint keyval)
 }
 
 
-// Load index from settings and set active group
-void load_settings() 
-{
-        int index = 0;
-        FILE *f = fopen("composer.rc", "r");
-        if (f == NULL) {
-                perror("fopen");
-        } else {
-                fscanf(f, "%d",&index);
-                fclose(f);
-        }
- 
-        if (index < GROUP_SIZE && index > -1) {
-                set_active_group(index);
-        } else {
-                set_active_group(0);
-        }
-}
-
-
-// Save index of selected group to file.
-// TODO: replace this with gsettings
-void save_settings()
-{
-        FILE *f = fopen("composer.rc", "w");
-        if (f == NULL)	{
-                perror("fopen");
-        } else {
-                fprintf(f, "%d\n", configuration.selected_group);
-                fclose(f);
-        }
-}
-
-
 // Let xdo send key to window that has focus.
 // This happend after gtk event loop has been terminated.
 void send_key(guint key) 
@@ -269,16 +114,14 @@ void send_key(guint key)
 int main(int argc, char **argv)
 {
 
-        gtk_init(&argc, &argv);
-        gui_create(&configuration);
-        load_settings();
-        gtk_main();
+        cfg_load(&configuration);
+        gui_init(argc, argv, &configuration);
 
         if (configuration.key_to_send != 0) {
                 send_key(configuration.key_to_send);
         }
 
-        save_settings();
+        cfg_save(&configuration);
         return 0;
 }
 
