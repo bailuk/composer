@@ -17,5 +17,6 @@ void gui_destroy();
 void gui_set_config_label(struct context_t* config);
 void gui_set_group_buttons(struct group_button_t groups[]);
 
+const gchar* gui_entry_get_outkey();
 
 #endif

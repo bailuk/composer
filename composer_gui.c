@@ -151,12 +151,12 @@ void gui_select_key(struct context_t* context)
 }
 
 
-void gui_select_group(struct context_t* configuration)
+void gui_select_group(struct context_t* context)
 {
-        gui_select_button(configuration->selected_group, gl_group_buttons);
+        gui_select_button(context->selected_group, gl_group_buttons);
         set_active_key(-1);
 
-        set_key_buttons(configuration->keys, &configuration->groups[configuration->selected_group]);
+        set_key_buttons(context->keys, &context->groups[context->selected_group]);
 
 }
 
@@ -283,9 +283,18 @@ void gui_destroy()
 }
 
 
+char entry[5] = "";
 void gui_set_config_label(struct context_t* context)
 {
         char* label = "Change key";
+
+
+        entry[0] = '\0';
+
+        if (context->selected_key > -1) {
+                g_snprintf(entry, sizeof(entry), "%lc", context->groups[context->selected_group].keys_out[context->selected_key]);
+        }
+
 
         if (context->change_key) {
                 if (context->selected_key > -1) {
@@ -295,8 +304,16 @@ void gui_set_config_label(struct context_t* context)
                         label = "Press new group-key";
                 }
         }
-        printf("key index %s, %i\n", label, context->selected_key);
+
+        //printf("key index %s, %i\n", label, context->selected_key);
         gtk_button_set_label(GTK_BUTTON(gl_config_key_in), label);
+
+
+        gtk_entry_set_text(GTK_ENTRY(gl_config_key_out_entry), entry);
 }
 
 
+const gchar* gui_entry_get_outkey()
+{
+        return gtk_entry_get_text(GTK_ENTRY(gl_config_key_out_entry));
+}

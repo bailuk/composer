@@ -22,7 +22,7 @@ gboolean change_key(guint keyval);
 
 
 struct key_button_t {
-        gchar label[15];       // label that gets displayed to the user
+        gchar label[10];       // label that gets displayed to the user
         guint key_in;          // button to select key or key group
 };
 

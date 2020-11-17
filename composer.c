@@ -85,7 +85,7 @@ void set_active_key(int index)
                 index = -1;
         }
 
-        printf("key index: %i\n", index);
+        //printf("key index: %i\n", index);
         configuration.selected_key = index;
         gui_select_key(&configuration);
         gui_set_config_label (&configuration);
@@ -154,4 +154,5 @@ int main(int argc, char **argv)
         cfg_save(&configuration);
         return 0;
 }
+
 

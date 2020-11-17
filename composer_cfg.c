@@ -96,6 +96,7 @@ int read_context(struct context_t* context) {
 
 void cfg_save(struct context_t* context)
 {
+        context->key_to_send = 0;
         write_context(context);
 }
 
