@@ -12,6 +12,45 @@
 
 struct context_t context;
 
+void send_key(guint key);
+
+
+int main(int argc, char **argv)
+{
+
+        cfg_load(&context);
+        gui_init(argc, argv, &context);
+
+        if (context.key_to_send != 0) {
+                send_key(context.key_to_send);
+        }
+
+        cfg_save(&context);
+        return 0;
+}
+
+
+// Let xdo send key to window that has focus.
+// This happend after gtk event loop has been terminated.
+void send_key(guint key)
+{
+        xdo_t* xdo = xdo_new(NULL);
+
+        gchar* key_sym = gdk_keyval_name(key);
+        gchar key_str[10];
+        snprintf(key_str, sizeof(key_str), "%lc", key);
+
+
+        printf("key_sym: %s\n",   key_sym);
+        printf("key_str: %s\n",   key_str);
+        printf("key_hex: 0x%X\n", key);
+        printf("key_chr: %lc\n",  key);
+
+        xdo_enter_text_window(xdo, CURRENTWINDOW, key_str, 0);
+        xdo_free(xdo);
+}
+
+
 
 gboolean change_key(guint keyval)
 {
@@ -19,20 +58,16 @@ gboolean change_key(guint keyval)
 
                 context.change_key = FALSE;
 
-                if (keyval != GDK_KEY_Escape) {
-
-                        if (context.selected_key > -1) {
-                                context.keys[context.selected_key].key_in = keyval;
-                        } else {
-
-                                context.groups[context.selected_group].button.key_in = keyval;
-                        }
+                if (context.selected_key > -1) {
+                        context.keys[context.selected_key].key_in = keyval;
+                } else {
+                        context.groups[context.selected_group].button.key_in = keyval;
                 }
 
                 context.selected_key = -1;
 
-                gui_set_config_label (&context);
-                gui_set_group_buttons(context.groups);
+                gui_set_config_label(&context);
+                gui_init_group_buttons(context.groups);
                 gui_select_group (&context);
                 return TRUE;
         }
@@ -110,6 +145,7 @@ void set_active_group(int index)
         gui_set_config_label (&context);
 }
 
+
 void set_active_key(int index)
 {
         context.change_key = FALSE;
@@ -118,7 +154,6 @@ void set_active_key(int index)
                 index = -1;
         }
 
-        //printf("key index: %i\n", index);
         context.selected_key = index;
         gui_select_key(&context);
         gui_set_config_label (&context);
@@ -153,39 +188,33 @@ gboolean set_active_group_from_keyval(guint keyval)
 }
 
 
-// Let xdo send key to window that has focus.
-// This happend after gtk event loop has been terminated.
-void send_key(guint key) 
+int best_index(struct group_button_t* group)
 {
-        xdo_t* xdo = xdo_new(NULL);
+        const int prefered[GROUP_SIZE] = {4,5,3,6,2,7,1,0};
 
-        gchar* key_sym = gdk_keyval_name(key);
-        gchar key_str[10];
-        snprintf(key_str, sizeof(key_str), "%lc", key);
+        for (int i = 0; i< GROUP_SIZE; i++) {
+                if (group->keys_out[prefered[i]] != 0) {
+                                return prefered[i];
+                }
+        }
+        return prefered[0];
 
+}
 
-        printf("key_sym: %s\n",   key_sym);
-        printf("key_str: %s\n",   key_str);
-        printf("key_hex: 0x%X\n", key);
-        printf("key_chr: %lc\n",  key);
+void init_group_label(struct group_button_t *group)
+{
+        guint key_in  = group->button.key_in;
+        guint key_out = group->keys_out[best_index(group)];
 
-        xdo_enter_text_window(xdo, CURRENTWINDOW, key_str, 0);
-        xdo_free(xdo);
+        g_snprintf(group->button.label, sizeof(group->button.label), "%lc :%lc", key_in, key_out);
 }
 
 
-int main(int argc, char **argv)
+void init_key_label(struct key_button_t *key, guint key_out)
 {
+        guint key_in = key->key_in;
 
-        cfg_load(&context);
-        gui_init(argc, argv, &context);
-
-        if (context.key_to_send != 0) {
-                send_key(context.key_to_send);
-        }
-
-        cfg_save(&context);
-        return 0;
+        g_snprintf(key->label, sizeof(key->label), "%lc :%lc", key_in, key_out);
 }
 
 

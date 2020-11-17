@@ -8,19 +8,9 @@
 #define GROUP_SIZE 8
 
 
-void set_active_group(int index);
-void set_active_key(int index);
-
-gboolean set_active_group_from_keyval(guint keyval);
-gboolean send_key_from_keyval(guint keyval);
-
-gboolean change_key(guint keyval);
-gboolean change_key_out(const gchar* text);
-
 //
 // Model for buttons
 //
-
 
 struct key_button_t {
         gchar label[10];       // label that gets displayed to the user
@@ -46,6 +36,20 @@ struct context_t {
 
         gboolean change_key;
 };
+
+
+void init_group_label(struct group_button_t *group);
+void init_key_label(struct key_button_t *key, guint key_out);
+
+
+void set_active_group(int index);
+void set_active_key(int index);
+
+gboolean set_active_group_from_keyval(guint keyval);
+gboolean send_key_from_keyval(guint keyval);
+
+gboolean change_key(guint keyval);
+gboolean change_key_out(const gchar* text);
 
 
 #endif

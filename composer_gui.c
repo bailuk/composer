@@ -27,7 +27,7 @@ GtkWidget* create_bbox(GtkWidget* parent);
 GtkWidget* create_vbox(GtkWidget* window, struct context_t* configuration);
 
 
-void set_key_buttons(struct key_button_t keys[], struct group_button_t* group);
+void init_key_buttons(struct key_button_t keys[], struct group_button_t* group);
 
 
 void button_init_label(struct key_button_t *key, guint key_out);
@@ -109,21 +109,6 @@ void add_key_buttons(GtkWidget* bbox)
 }
 
 
-void button_init_group_label(struct group_button_t *group)
-{
-        guint key_in  = group->button.key_in;
-        guint key_out = group->keys_out[6];
-
-        g_snprintf(group->button.label, sizeof(group->button.label), "%lc :%lc", key_in, key_out);
-}
-
-
-void button_init_label(struct key_button_t *key, guint key_out)
-{
-        guint key_in = key->key_in;
-
-        g_snprintf(key->label, sizeof(key->label), "%lc :%lc", key_in, key_out);
-}
 
 
 void gui_select_button(int index, GtkWidget* buttons[]) {
@@ -156,23 +141,23 @@ void gui_select_group(struct context_t* context)
         gui_select_button(context->selected_group, gl_group_buttons);
         set_active_key(-1);
 
-        set_key_buttons(context->keys, &context->groups[context->selected_group]);
+        init_key_buttons(context->keys, &context->groups[context->selected_group]);
 
 }
 
 
-void set_key_buttons(struct key_button_t keys[], struct group_button_t* group) {
+void init_key_buttons(struct key_button_t keys[], struct group_button_t* group) {
         for (int i=0; i<GROUP_SIZE; i++) {
-                button_init_label(&keys[i], group->keys_out[i]);
+                init_key_label(&keys[i], group->keys_out[i]);
                 gtk_button_set_label(GTK_BUTTON(gl_key_buttons[i]), keys[i].label);
         }
 }
 
 // set label of group buttons
-void gui_set_group_buttons(struct group_button_t groups[])
+void gui_init_group_buttons(struct group_button_t groups[])
 {
         for (int i=0; i<GROUP_SIZE; i++) {
-                button_init_group_label(&groups[i]);
+                init_group_label(&groups[i]);
                 gtk_button_set_label(GTK_BUTTON(gl_group_buttons[i]), groups[i].button.label);
         }
 }
@@ -240,7 +225,7 @@ create_vbox(GtkWidget* window, struct context_t* context)
                         create_settings_frame(context),
                         TRUE, TRUE, 5);
 
-        gui_set_group_buttons(context->groups);
+        gui_init_group_buttons(context->groups);
 
         return result;
 }

@@ -42,27 +42,24 @@ void on_key_button_toggled (GtkToggleButton* source, gpointer user_data)
 
 gboolean on_key_press (GtkWidget* widget, GdkEventKey* event, gpointer data)
 {
-
         if (event->keyval == GDK_KEY_Escape) {
                 gui_destroy();
                 return FALSE;
-        }
 
-        if (change_key(event->keyval)) {
+        } else if (change_key(event->keyval)) {
                 return FALSE;
-        }
 
-        if (send_key_from_keyval(event->keyval)) {
+        } else if (send_key_from_keyval(event->keyval)) {
                 gui_destroy();
                 return FALSE;
-        }
 
-        if(set_active_group_from_keyval(event->keyval)) {
+        } else if(set_active_group_from_keyval(event->keyval)) {
                 return FALSE;
         }
 
         return FALSE;
 }
+
 
 void on_change_key_in (GtkToggleButton *source, gpointer user_data)
 {
