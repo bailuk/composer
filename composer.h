@@ -15,6 +15,7 @@ gboolean set_active_group_from_keyval(guint keyval);
 gboolean send_key_from_keyval(guint keyval);
 
 gboolean change_key(guint keyval);
+gboolean change_key_out(const gchar* text);
 
 //
 // Model for buttons

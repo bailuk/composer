@@ -10,40 +10,73 @@
 #include "composer_cfg.h"
 
 
-struct context_t configuration;
+struct context_t context;
 
 
 gboolean change_key(guint keyval)
 {
-        if (configuration.change_key) {
+        if (context.change_key) {
 
-                configuration.change_key = FALSE;
+                context.change_key = FALSE;
 
                 if (keyval != GDK_KEY_Escape) {
 
-                        if (configuration.selected_key > -1) {
-                                configuration.keys[configuration.selected_key].key_in = keyval;
+                        if (context.selected_key > -1) {
+                                context.keys[context.selected_key].key_in = keyval;
                         } else {
 
-                                configuration.groups[configuration.selected_group].button.key_in = keyval;
+                                context.groups[context.selected_group].button.key_in = keyval;
                         }
                 }
 
-                configuration.selected_key = -1;
+                context.selected_key = -1;
 
-                gui_set_config_label (&configuration);
-                gui_set_group_buttons(configuration.groups);
-                gui_select_group (&configuration);
+                gui_set_config_label (&context);
+                gui_set_group_buttons(context.groups);
+                gui_select_group (&context);
                 return TRUE;
         }
         return FALSE;
 }
 
 
+
+gboolean change_key_out(const gchar* text)
+{
+        guchar uchar;
+        struct group_button_t* group;
+
+        gboolean result = FALSE;
+
+        if (text != NULL &&
+            context.selected_key > -1) {
+                uchar = g_utf8_get_char(text);
+
+                printf("string: %s\n", text);
+                printf("strlen: %li\n",strlen(text));
+                printf("uchar: %lc\n", uchar);
+                printf("ucharv: %u\n", uchar);
+
+                printf("selected group %i\n", context.selected_group);
+                printf("selected key %i\n", context.selected_key);
+
+                group = &context.groups[context.selected_group];
+                group->keys_out[context.selected_key] = uchar;
+
+                result = TRUE;
+        }
+
+        context.selected_key = -1;
+        context.change_key = FALSE;
+
+        return result;
+}
+
+
 int get_group_index_from_key(guint keyval)
 {
         for (int i=0; i< GROUP_SIZE; i++) {
-                if (configuration.groups[i].button.key_in == keyval) {
+                if (context.groups[i].button.key_in == keyval) {
                         return i;
                 }
         }
@@ -56,7 +89,7 @@ int get_group_index_from_key(guint keyval)
 int get_key_index_from_key(guint keyval)
 {
         for (int i=0; i< GROUP_SIZE; i++) {
-                if (configuration.keys[i].key_in == keyval) {
+                if (context.keys[i].key_in == keyval) {
                         return i;
                 }
         }
@@ -66,29 +99,29 @@ int get_key_index_from_key(guint keyval)
 
 void set_active_group(int index)
 {
-        configuration.change_key = FALSE;
+        context.change_key = FALSE;
 
         if (index < 0 || index >= GROUP_SIZE) {
                 index = 0;
         }
 
-        configuration.selected_group = index;
-        gui_select_group(&configuration);
-        gui_set_config_label (&configuration);
+        context.selected_group = index;
+        gui_select_group(&context);
+        gui_set_config_label (&context);
 }
 
 void set_active_key(int index)
 {
-        configuration.change_key = FALSE;
+        context.change_key = FALSE;
 
         if (index < 0 || index >= GROUP_SIZE) {
                 index = -1;
         }
 
         //printf("key index: %i\n", index);
-        configuration.selected_key = index;
-        gui_select_key(&configuration);
-        gui_set_config_label (&configuration);
+        context.selected_key = index;
+        gui_select_key(&context);
+        gui_set_config_label (&context);
 }
 
 
@@ -100,7 +133,7 @@ gboolean send_key_from_keyval(guint keyval)
         int index = get_key_index_from_key(keyval);
 
         if (index>-1) {
-                configuration.key_to_send = configuration.groups[configuration.selected_group].keys_out[index];
+                context.key_to_send = context.groups[context.selected_group].keys_out[index];
                 return TRUE;
         }
         return FALSE;
@@ -144,14 +177,14 @@ void send_key(guint key)
 int main(int argc, char **argv)
 {
 
-        cfg_load(&configuration);
-        gui_init(argc, argv, &configuration);
+        cfg_load(&context);
+        gui_init(argc, argv, &context);
 
-        if (configuration.key_to_send != 0) {
-                send_key(configuration.key_to_send);
+        if (context.key_to_send != 0) {
+                send_key(context.key_to_send);
         }
 
-        cfg_save(&configuration);
+        cfg_save(&context);
         return 0;
 }
 

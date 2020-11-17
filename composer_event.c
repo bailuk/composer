@@ -81,33 +81,10 @@ void on_change_key_out (GtkToggleButton *source, gpointer user_data)
 {
 
         struct context_t* context = (struct context_t*) user_data;
-
         const gchar* text = gui_entry_get_outkey();
-        gunichar uchar;
-
-
 
         if (context->selected_key > -1) {
-
-                if (text != NULL) {
-                        uchar = g_utf8_get_char(text);
-
-                        printf("string: %s\n", text);
-                        printf("strlen: %li\n",strlen(text));
-                        printf("uchar: %lc\n", uchar);
-                        printf("ucharv: %u\n", uchar);
-
-                        printf("selected group %i\n", context->selected_group);
-                        printf("selected key %i\n", context->selected_key);
-
-                        struct group_button_t* group = &context->groups[context->selected_group];
-                        group->keys_out[context->selected_key] = uchar;
-
-
-                }
-                context->selected_key = -1;
-                context->change_key = FALSE;
-
+                change_key_out(text);
 
                 gui_select_group(context);
                 gui_set_config_label(context);
